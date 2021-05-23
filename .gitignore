@@ -1,2 +1,3 @@
 mybackup
 srcs/requirements/mariadb/tools/db/*
+srcs/requirements/wordpress/tools/html/*

@@ -7,4 +7,7 @@ up:
 down:
 	$(DC) -f $(SRCS)docker-compose.yml down -v
 
-.PHONY:	up down
+balus:
+	$(DC) -f $(SRCS)docker-compose.yml down --rmi all --volumes --remove-orphans
+
+.PHONY:	up down balus
