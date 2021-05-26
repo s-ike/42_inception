@@ -5,6 +5,9 @@ DC		:= docker-compose
 up:
 	$(DC) -f $(SRCS)$(DC_YML) up -d
 
+upb:
+	$(DC) -f $(SRCS)$(DC_YML) up -d --build
+
 down:
 	$(DC) -f $(SRCS)$(DC_YML) down -v
 
@@ -14,4 +17,4 @@ logs:
 balus:
 	$(DC) -f $(SRCS)$(DC_YML) down --rmi all --volumes --remove-orphans
 
-.PHONY:	up down logs balus
+.PHONY:	up upb down logs balus
