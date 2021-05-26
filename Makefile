@@ -1,13 +1,17 @@
 SRCS	:= srcs/
+DC_YML	:= docker-compose.yml
 DC		:= docker-compose
 
 up:
-	$(DC) -f $(SRCS)docker-compose.yml up -d
+	$(DC) -f $(SRCS)$(DC_YML) up -d
 
 down:
-	$(DC) -f $(SRCS)docker-compose.yml down -v
+	$(DC) -f $(SRCS)$(DC_YML) down -v
+
+logs:
+	$(DC) -f $(SRCS)$(DC_YML) logs -f
 
 balus:
-	$(DC) -f $(SRCS)docker-compose.yml down --rmi all --volumes --remove-orphans
+	$(DC) -f $(SRCS)$(DC_YML) down --rmi all --volumes --remove-orphans
 
-.PHONY:	up down balus
+.PHONY:	up down logs balus

@@ -1,7 +1,8 @@
 version: '3.7'
 services:
   db:
-    image: mariadb
+    build:
+      context: ./requirements/mariadb
     volumes:
       - ./requirements/mariadb/tools/db:/var/lib/mysql
     restart: always
