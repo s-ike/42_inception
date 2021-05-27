@@ -4,10 +4,10 @@ RUN apk add --update --no-cache \
         mariadb \
         mariadb-client \
         mariadb-server-utils \
-        pwgen && \
-    rm -f /var/cache/apk/*
+        pwgen \
+    && rm -f /var/cache/apk/*
 
-ADD tools/init_db.sh /tmp/init_db.sh
+COPY tools/init_db.sh /tmp/.
 RUN chmod -R 755 /tmp/init_db.sh
 
 EXPOSE 3306
