@@ -31,10 +31,12 @@ services:
       - frontend
       - backend
   nginx:
-    image: nginx:alpine
+    build:
+      context: ./requirements/nginx
     volumes:
       - ./requirements/nginx/conf:/etc/nginx/conf.d
       - ./requirements/wordpress/tools/html:/var/www/html
+    restart: always
     ports:
       - 8080:80
     networks:
