@@ -1,8 +1,8 @@
 version: '3.7'
 services:
   db:
-    build:
-      context: ./requirements/mariadb
+    build: ./requirements/mariadb
+    image: mariadb
     volumes:
       - ./requirements/mariadb/tools/db:/var/lib/mysql
     restart: always
@@ -31,14 +31,14 @@ services:
       - frontend
       - backend
   nginx:
-    build:
-      context: ./requirements/nginx
+    build: ./requirements/nginx
+    image: nginx
     volumes:
       - ./requirements/nginx/conf:/etc/nginx/conf.d
       - ./requirements/wordpress/tools/html:/var/www/html
     restart: always
     ports:
-      - 8080:80
+      - "8080:80"
     networks:
       - frontend
 networks:
