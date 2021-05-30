@@ -16,9 +16,12 @@ services:
     networks:
       - backend
   wordpress:
-    image: wordpress:php7.3-fpm-alpine
+    build: ./requirements/wordpress
+    image: wordpress
+    # image: wordpress:php7.3-fpm-alpine
     volumes:
-      - ./requirements/wordpress/tools/html:/var/www/html
+      # - ./requirements/wordpress/tools/html:/var/www/html
+      - wordpress_data:/var/www/html
     depends_on:
       - db
     restart: always
@@ -27,6 +30,8 @@ services:
       - WORDPRESS_DB_USER=$WORDPRESS_DB_USER
       - WORDPRESS_DB_PASSWORD=$WORDPRESS_DB_PASSWORD
       - WORDPRESS_DB_NAME=$WORDPRESS_DB_NAME
+    expose:
+      - 9000
     networks:
       - frontend
       - backend
@@ -35,7 +40,10 @@ services:
     image: nginx
     volumes:
       - ./requirements/nginx/conf:/etc/nginx/conf.d
-      - ./requirements/wordpress/tools/html:/var/www/html
+      # - ./requirements/wordpress/tools/html:/var/www/html
+      - wordpress_data:/var/www/html
+    depends_on:
+      - wordpress
     restart: always
     ports:
       - "8080:80"
@@ -54,3 +62,9 @@ networks:
       driver: default
       config:
         - subnet: 192.168.20.0/24
+volumes:
+  wordpress_data:
+    driver_opts:
+      type: none
+      device: ~/Documents/DEV/42tokyo/cursus/inception/inception/srcs/requirements/wordpress/tools/html
+      o: bind
