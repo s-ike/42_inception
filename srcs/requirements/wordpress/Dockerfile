@@ -15,6 +15,9 @@ RUN apk add --no-cache \
         ghostscript \
         imagemagick \
         php-mysqli \
+        php7-gd \
+        php7-imagick \
+        php7-iconv \
         php7-dom \
         php-curl \
         php-json \
