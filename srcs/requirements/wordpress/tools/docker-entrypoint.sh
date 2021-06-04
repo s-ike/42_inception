@@ -31,68 +31,56 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm7' ]; then
 			chown "$user:$group" .
 		fi
 
-		echo >&2 "WordPress not found in $PWD - copying now..."
-		if [ -n "$(find -mindepth 1 -maxdepth 1 -not -name wp-content)" ]; then
-			echo >&2 "WARNING: $PWD is not empty! (copying anyhow)"
+		echo >&2 "WordPress not found in $PWD - download now..."
+		wp core download \
+			--locale=ja
+		if [ $? -eq 0 ]; then
+			chown -R www-data:www-data /var/www/html
+			chmod -R 777 wp-content
+		else
+			exit 1
 		fi
-		sourceTarArgs=(
-			--create
-			--file -
-			--directory /usr/src/wordpress
-			--owner "$user" --group "$group"
-		)
-		targetTarArgs=(
-			--extract
-			--file -
-		)
-		if [ "$uid" != '0' ]; then
-			# avoid "tar: .: Cannot utime: Operation not permitted" and "tar: .: Cannot change mode to rwxr-xr-x: Operation not permitted"
-			targetTarArgs+=( --no-overwrite-dir )
-		fi
-		# loop over "pluggable" content in the source, and if it already exists in the destination, skip it
-		# https://github.com/docker-library/wordpress/issues/506 ("wp-content" persisted, "akismet" updated, WordPress container restarted/recreated, "akismet" downgraded)
-		for contentPath in \
-			/usr/src/wordpress/.htaccess \
-			/usr/src/wordpress/wp-content/*/*/ \
-		; do
-			contentPath="${contentPath%/}"
-			[ -e "$contentPath" ] || continue
-			contentPath="${contentPath#/usr/src/wordpress/}" # "wp-content/plugins/akismet", etc.
-			if [ -e "$PWD/$contentPath" ]; then
-				echo >&2 "WARNING: '$PWD/$contentPath' exists! (not copying the WordPress version)"
-				sourceTarArgs+=( --exclude "./$contentPath" )
-			fi
-		done
-		tar "${sourceTarArgs[@]}" . | tar "${targetTarArgs[@]}"
-		echo >&2 "Complete! WordPress has been successfully copied to $PWD"
-	fi
+		echo >&2 "Complete! WordPress has been successfully downloaded to $PWD"
 
-	wpEnvs=( "${!WORDPRESS_@}" )
-	if [ ! -s wp-config.php ] && [ "${#wpEnvs[@]}" -gt 0 ]; then
-		for wpConfigDocker in \
-			wp-config-docker.php \
-			/usr/src/wordpress/wp-config-docker.php \
-		; do
-			if [ -s "$wpConfigDocker" ]; then
-				echo >&2 "No 'wp-config.php' found in $PWD, but 'WORDPRESS_...' variables supplied; copying '$wpConfigDocker' (${wpEnvs[*]})"
-				# using "awk" to replace all instances of "put your unique phrase here" with a properly unique string (for AUTH_KEY and friends to have safe defaults if they aren't specified with environment variables)
-				awk '
-					/put your unique phrase here/ {
-						cmd = "head -c1m /dev/urandom | sha1sum | cut -d\\  -f1"
-						cmd | getline str
-						close(cmd)
-						gsub("put your unique phrase here", str)
-					}
-					{ print }
-				' "$wpConfigDocker" > wp-config.php
-				if [ "$uid" = '0' ]; then
-					# attempt to ensure that wp-config.php is owned by the run user
-					# could be on a filesystem that doesn't allow chown (like some NFS setups)
-					chown "$user:$group" wp-config.php || true
-				fi
-				break
-			fi
+		echo "Waiting for database"
+		until mysql -h"${WORDPRESS_DB_HOST}" -u"${WORDPRESS_DB_USER}" -p"${WORDPRESS_DB_PASSWORD}" &> /dev/null; do
+			>&2 echo -n "."
+			sleep 1
 		done
+		>&2 echo "Database is up"
+
+		if [ ! -s wp-config.php ]; then
+			wp config create \
+				--dbname=${WORDPRESS_DB_NAME} \
+				--dbuser=${WORDPRESS_DB_USER} \
+				--dbpass=${WORDPRESS_DB_PASSWORD} \
+				--dbhost=${WORDPRESS_DB_HOST} \
+				--force \
+				--allow-root \
+				--extra-php <<PHP
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_DISPLAY', true );
+ini_set( 'display_errors', 1 );
+ini_set( 'log_errors', 1 );
+ini_set( 'error_log', '/var/log/wordpress/error.log');
+define( 'JETPACK_DEV_DEBUG', true );
+PHP
+		fi
+
+		wp core install \
+			--url='http://localhost:8080' \
+			--title=${WORDPRESS_WEBSITE_TITLE} \
+			--admin_user=${WORDPRESS_ADMIN_USER} \
+			--admin_password=${WORDPRESS_ADMIN_PASSWORD} \
+			--admin_email=${WORDPRESS_ADMIN_EMAIL} \
+			--allow-root
+
+		wp user create ${WORDPRESS_EDITOR_USER} ${WORDPRESS_EDITOR_EMAIL} \
+			--user_pass=${WORDPRESS_EDITOR_PASSWORD} \
+			--role=${WORDPRESS_EDITOR_ROLE} \
+			--allow-root
+
+		wp plugin delete hello.php --allow-root
 	fi
 fi
 

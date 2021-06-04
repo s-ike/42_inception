@@ -9,11 +9,12 @@ RUN set -eux; \
 RUN apk add --no-cache \
         curl \
         tar \
-        php-fpm \
         bash \
         sed \
         ghostscript \
         imagemagick \
+        php \
+        php-fpm \
         php-mysqli \
         php7-gd \
         php7-imagick \
@@ -28,7 +29,9 @@ RUN apk add --no-cache \
         openssl \
         pcre \
         php-xml \
-        php-zip
+        php-zip \
+        php7-phar \
+        mysql-client
 
 RUN set -eux \
     # mkdir -p "$PHP_INI_DIR/conf.d"; \
@@ -47,8 +50,6 @@ RUN sed -ie 's/^user = nobody$/user = www-data/' /etc/php7/php-fpm.d/www.conf \
     && sed -ie 's/^group = nobody$/user = www-data/' /etc/php7/php-fpm.d/www.conf \
     && sed -ie 's/^listen = 127.0.0.1:9000/listen = 9000/' /etc/php7/php-fpm.d/www.conf \
     && sed -ie 's/^;clear_env = no$/clear_env = no/' /etc/php7/php-fpm.d/www.conf
-    #  \
-    # && chown -R www-data:www-data /var/www/html/*
 
 # https://wordpress.org/support/article/editing-wp-config-php/#configure-error-logging
 RUN { \
@@ -65,47 +66,15 @@ RUN { \
         echo 'html_errors = Off'; \
     } > /usr/local/etc/php/conf.d/error-logging.ini
 
+# wp-cli
 RUN set -eux; \
-    version='5.7.2'; \
-    sha1='c97c037d942e974eb8524213a505268033aff6c8'; \
-    \
-    curl -o wordpress.tar.gz -fL "https://wordpress.org/wordpress-$version.tar.gz"; \
-    echo "$sha1 *wordpress.tar.gz" | sha1sum -c -; \
-    \
-# upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
-    tar -xzf wordpress.tar.gz -C /usr/src/; \
-    rm wordpress.tar.gz; \
-    \
-# https://wordpress.org/support/article/htaccess/
-    [ ! -e /usr/src/wordpress/.htaccess ]; \
-    { \
-        echo '# BEGIN WordPress'; \
-        echo ''; \
-        echo 'RewriteEngine On'; \
-        echo 'RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]'; \
-        echo 'RewriteBase /'; \
-        echo 'RewriteRule ^index\.php$ - [L]'; \
-        echo 'RewriteCond %{REQUEST_FILENAME} !-f'; \
-        echo 'RewriteCond %{REQUEST_FILENAME} !-d'; \
-        echo 'RewriteRule . /index.php [L]'; \
-        echo ''; \
-        echo '# END WordPress'; \
-    } > /usr/src/wordpress/.htaccess; \
-	\
-	chown -R www-data:www-data /usr/src/wordpress; \
-# pre-create wp-content (and single-level children) for folks who want to bind-mount themes, etc so permissions are pre-created properly instead of root:root
-# wp-content/cache: https://github.com/docker-library/wordpress/issues/534#issuecomment-705733507
-	mkdir wp-content; \
-    for dir in /usr/src/wordpress/wp-content/*/ cache; do \
-        dir="$(basename "${dir%/}")"; \
-        mkdir "wp-content/$dir"; \
-    done; \
-    chown -R www-data:www-data wp-content; \
-    chmod -R 777 wp-content
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
+    chmod +x wp-cli.phar; \
+    mv wp-cli.phar /usr/local/bin/wp; \
+    wp --allow-root --version
 
 VOLUME /var/www/html
 
-COPY --chown=www-data:www-data conf/wp-config-docker.php /usr/src/wordpress/
 COPY tools/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
