@@ -1,10 +1,10 @@
-version: '3.7'
+version: '3'
 services:
   db:
     build: ./requirements/mariadb
     image: mariadb
     volumes:
-      - ./requirements/mariadb/tools/db:/var/lib/mysql
+      - $DB_VOLUME:/var/lib/mysql
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
@@ -21,7 +21,7 @@ services:
     # image: wordpress:php7.3-fpm-alpine
     volumes:
       # - ./requirements/wordpress/tools/html:/var/www/html
-      - wordpress_data:/var/www/html
+      - $WORDPRSS_VOLUME:/var/www/html
     depends_on:
       - db
     restart: always
@@ -53,7 +53,7 @@ services:
     volumes:
       - ./requirements/nginx/conf:/etc/nginx/conf.d
       # - ./requirements/wordpress/tools/html:/var/www/html
-      - wordpress_data:/var/www/html
+      - $WORDPRSS_VOLUME:/var/www/html
     depends_on:
       - wordpress
     restart: always
@@ -78,5 +78,5 @@ volumes:
   wordpress_data:
     driver_opts:
       type: none
-      device: ~/Documents/DEV/42tokyo/cursus/inception/inception/srcs/requirements/wordpress/tools/html
+      device: $WORDPRSS_VOLUME
       o: bind

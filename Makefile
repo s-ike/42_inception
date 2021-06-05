@@ -1,28 +1,27 @@
 SRCS	:= srcs/
-DC_YML	:= docker-compose.yml
-DC		:= docker-compose
+DC		:= cd $(SRCS) && docker-compose
 
 all:	up
 
 up:
-		$(DC) -f $(SRCS)$(DC_YML) up -d
+		$(DC) up -d
 
 upb:
-		$(DC) -f $(SRCS)$(DC_YML) up -d --build
+		$(DC) up -d --build
 
 down:
-		$(DC) -f $(SRCS)$(DC_YML) down -v
+		$(DC) down -v
 
 logs:
-		$(DC) -f $(SRCS)$(DC_YML) logs -f
+		$(DC) logs -f
 
 ps:
-		$(DC) -f $(SRCS)$(DC_YML) ps
+		$(DC) ps
 
 clean:	down
 
 fclean:
-		$(DC) -f $(SRCS)$(DC_YML) down --rmi all --volumes --remove-orphans
+		$(DC) down --rmi all --volumes --remove-orphans
 
 re:		fclean all
 
