@@ -5,15 +5,20 @@ RUN apk add --no-cache \
         openssl \
     && rm -f /var/cache/apk/*
 
-RUN mkdir /etc/ssl/self \
-    && openssl req \
-        -x509 \
-        -nodes \
-        -days 365 \
-        -newkey rsa:2048 \
-        -keyout /etc/ssl/self/selfsigned.key \
-        -out /etc/ssl/self/selfsigned.crt \
-        -subj "/C=JP/ST=Tokyo/L=Roppongi/O=42Tokyo/CN=localhost"
+RUN set -eux; \
+    mkdir /etc/ssl/self; \
+    openssl genrsa \
+        -out /etc/ssl/self/cakey.pem 2048; \
+    openssl req -new \
+        -subj "/C=JP/ST=Tokyo/L=Chuo-ku/O=RMP Inc./OU=web/CN=localhost" \
+        -key /etc/ssl/self/cakey.pem \
+        -out /etc/ssl/self/cacert.csr; \
+    openssl x509 \
+        -days 3650 \
+        -in /etc/ssl/self/cacert.csr -req \
+        -signkey /etc/ssl/self/cakey.pem \
+        -out /etc/ssl/self/cacert.pem; \
+    chmod 400 /etc/ssl/self/cakey.pem
 
 RUN mkdir -p /run/nginx
 

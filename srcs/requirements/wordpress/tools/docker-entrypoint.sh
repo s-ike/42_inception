@@ -68,7 +68,7 @@ PHP
 		fi
 
 		wp core install \
-			--url='http://localhost:8080' \
+			--url='https://localhost' \
 			--title=${WORDPRESS_WEBSITE_TITLE} \
 			--admin_user=${WORDPRESS_ADMIN_USER} \
 			--admin_password=${WORDPRESS_ADMIN_PASSWORD} \
