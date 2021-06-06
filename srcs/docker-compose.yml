@@ -1,6 +1,6 @@
-version: '3'
+version: "3"
 services:
-  db:
+  mariadb:
     build: ./requirements/mariadb
     image: mariadb
     volumes:
@@ -23,7 +23,7 @@ services:
       # - ./requirements/wordpress/tools/html:/var/www/html
       - $WORDPRSS_VOLUME:/var/www/html
     depends_on:
-      - db
+      - mariadb
     restart: always
     environment:
       # wordpress database
