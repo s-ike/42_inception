@@ -1,7 +1,10 @@
 SRCS	:= srcs/
 DC		:= cd $(SRCS) && docker-compose
 
-all:	up
+all:	setup up
+
+setup:
+		echo '127.0.0.1 sikeda.42.fr' | sudo tee -a /etc/hosts
 
 up:
 		$(DC) up -d

@@ -10,7 +10,7 @@ RUN set -eux; \
     openssl genrsa \
         -out /etc/ssl/self/cakey.pem 2048; \
     openssl req -new \
-        -subj "/C=JP/ST=Tokyo/L=Chuo-ku/O=RMP Inc./OU=web/CN=localhost" \
+        -subj "/C=JP/ST=Tokyo/L=Roppongi/O=42Tokyo/CN=localhost" \
         -key /etc/ssl/self/cakey.pem \
         -out /etc/ssl/self/cacert.csr; \
     openssl x509 \

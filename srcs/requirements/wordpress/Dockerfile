@@ -31,7 +31,8 @@ RUN apk add --no-cache \
         php-xml \
         php-zip \
         php7-phar \
-        mysql-client
+        mysql-client \
+    && rm -f /var/cache/apk/*
 
 RUN set -eux \
     # mkdir -p "$PHP_INI_DIR/conf.d"; \
