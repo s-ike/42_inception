@@ -35,7 +35,6 @@ RUN apk add --no-cache \
     && rm -f /var/cache/apk/*
 
 RUN set -eux \
-    # mkdir -p "$PHP_INI_DIR/conf.d"; \
 # allow running as an arbitrary user (https://github.com/docker-library/php/issues/743)
     [ ! -d /var/www/html ]; \
     mkdir -p /var/www/html; \
