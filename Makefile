@@ -1,10 +1,12 @@
-SRCS	:= srcs/
-DC		:= cd $(SRCS) && docker-compose
+SRCS		:= srcs/
+DC			:= cd $(SRCS) && docker-compose
+DB_VOLUME	:= `grep -E "^DB_VOLUME=" ./srcs/.env | sed -e "s/^.*=//"`
+WP_VOLUME	:= `grep -E "^WP_VOLUME=" ./srcs/.env | sed -e "s/^.*=//"`
 
-all:	setup up
+all:	setup upb
 
 setup:
-		echo '127.0.0.1 sikeda.42.fr' | sudo tee -a /etc/hosts
+		./srcs/requirements/tools/setup.sh setup
 
 up:
 		$(DC) up -d
@@ -25,6 +27,8 @@ clean:	down
 
 fclean:
 		$(DC) down --rmi all --volumes --remove-orphans
+		./srcs/requirements/tools/setup.sh fclean
+		sudo rm -rf $(WP_VOLUME) ${DB_VOLUME}
 
 re:		fclean all
 
