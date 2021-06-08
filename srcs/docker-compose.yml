@@ -18,7 +18,6 @@ services:
   wordpress:
     build: ./requirements/wordpress
     image: wordpress
-    # image: wordpress:php7.3-fpm-alpine
     volumes:
       - $WP_VOLUME:/var/www/html
     depends_on:
