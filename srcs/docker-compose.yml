@@ -59,7 +59,6 @@ services:
     environment:
       - DOMAIN_NAME=$DOMAIN_NAME
     ports:
-      - "8080:80"
       - "443:443"
     networks:
       - frontend
