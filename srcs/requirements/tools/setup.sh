@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 DOMAIN_NAME=`grep DOMAIN_NAME= ./srcs/.env | sed -e 's/^.*=//'`
 if [ `echo ${#DOMAIN_NAME}` -eq 0 ]; then
