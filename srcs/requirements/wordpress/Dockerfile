@@ -64,7 +64,7 @@ RUN { \
         echo 'ignore_repeated_errors = On'; \
         echo 'ignore_repeated_source = Off'; \
         echo 'html_errors = Off'; \
-    } > /usr/local/etc/php/conf.d/error-logging.ini
+    } > /etc/php/conf.d/error-logging.ini
 
 # wp-cli
 RUN set -eux; \
