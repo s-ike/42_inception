@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -Eeuo pipefail
+#!/bin/bash
+set -eu
 
 if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm7' ]; then
 	uid="$(id -u)"
