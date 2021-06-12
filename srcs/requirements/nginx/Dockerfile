@@ -22,6 +22,6 @@ RUN set -eux; \
 
 RUN mkdir -p /run/nginx
 
-EXPOSE 80 443
+EXPOSE 443
 
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
