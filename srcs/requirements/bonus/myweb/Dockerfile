@@ -1,9 +1,19 @@
-FROM golang:alpine3.12
+FROM alpine:3.12
 
 RUN apk add --no-cache \
-        git
+        vim \
+        git \
+        make \
+        musl-dev \
+        go \
+    && rm -f /var/cache/apk/*
 
-ENV GOPATH=
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+
+RUN mkdir -p /go/src/github.com/myweb
+
 RUN set -eux; \
     go mod init github.com/myweb; \
     go mod tidy; \
