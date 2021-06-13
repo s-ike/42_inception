@@ -22,6 +22,8 @@ RUN set -eux; \
 
 RUN mkdir -p /run/nginx
 
+COPY conf/default.conf /etc/nginx/conf.d/
+
 EXPOSE 443
 
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]

@@ -50,7 +50,6 @@ services:
     build: ./requirements/nginx
     image: nginx
     volumes:
-      - ./requirements/nginx/conf/default.conf:/etc/nginx/conf.d/default.conf
       - $WP_VOLUME:/var/www/html
       - $AD_VOLUME:/var/www/html/adminer
     depends_on:
