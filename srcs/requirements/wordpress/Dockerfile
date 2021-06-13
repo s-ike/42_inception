@@ -8,28 +8,27 @@ RUN set -eux; \
 
 RUN apk add --no-cache \
         curl \
-        tar \
         bash \
         sed \
         ghostscript \
         imagemagick \
-        php \
-        php-fpm \
-        php-mysqli \
+        php7 \
+        php7-fpm \
+        php7-mysqli \
         php7-gd \
         php7-imagick \
         php7-iconv \
         php7-dom \
-        php-curl \
-        php-json \
-        php-mbstring \
-        php-exif \
-        php-fileinfo \
+        php7-curl \
+        php7-json \
+        php7-mbstring \
+        php7-exif \
+        php7-fileinfo \
         php7-sodium \
         openssl \
         pcre \
-        php-xml \
-        php-zip \
+        php7-xml \
+        php7-zip \
         php7-phar \
         mysql-client \
     && rm -f /var/cache/apk/*

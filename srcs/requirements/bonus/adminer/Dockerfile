@@ -8,20 +8,19 @@ RUN set -eux; \
 
 RUN apk add --no-cache \
         curl \
-        tar \
-        php \
-        php-fpm \
-        php-mysqli \
+        php7 \
+        php7-fpm \
+        php7-mysqli \
         mysql-client \
         postgresql-dev \
         sqlite-dev \
         unixodbc-dev \
         freetds-dev \
-        php-pdo \
-        php-pdo_sqlite \
-        php-pdo_mysql \
-        php-pdo_pgsql \
-        php-session \
+        php7-pdo \
+        php7-pdo_sqlite \
+        php7-pdo_mysql \
+        php7-pdo_pgsql \
+        php7-session \
     && rm -f /var/cache/apk/*
 
 ENV PHP_INI_DIR /usr/local/etc/php
