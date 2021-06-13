@@ -89,14 +89,3 @@ networks:
       driver: default
       config:
         - subnet: 192.168.20.0/24
-volumes:
-  wordpress_data:
-    driver_opts:
-      type: none
-      device: $WP_VOLUME
-      o: bind
-  adminer_data:
-    driver_opts:
-      type: none
-      device: $AD_VOLUME
-      o: bind
