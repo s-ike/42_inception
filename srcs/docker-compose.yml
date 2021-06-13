@@ -75,6 +75,15 @@ services:
     networks:
       - frontend
       - backend
+  myweb:
+    build: ./requirements/bonus/myweb
+    image: myweb
+    volumes:
+      - ./requirements/bonus/myweb/tools:/go/src/github.com/myweb
+    expose:
+      - 3000
+    networks:
+      - frontend
 networks:
   frontend:
     driver: bridge
