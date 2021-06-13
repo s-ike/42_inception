@@ -7,11 +7,11 @@ RUN apk add --update --no-cache \
         pwgen \
     && rm -f /var/cache/apk/*
 
-COPY tools/init_db.sh /tmp/.
-RUN chmod -R 755 /tmp/init_db.sh
+COPY tools/docker-entrypoint.sh /tmp/.
+RUN chmod -R 755 /tmp/docker-entrypoint.sh
 
 EXPOSE 3306
 
 VOLUME ["/var/lib/mysql"]
 
-ENTRYPOINT ["/tmp/init_db.sh"]
+ENTRYPOINT ["/tmp/docker-entrypoint.sh"]
