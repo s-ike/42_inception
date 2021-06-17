@@ -36,6 +36,13 @@ if [ "$1" = 'php-fpm7' ]; then
 		done
 		>&2 echo "Database is up"
 
+		echo "Waiting for Redis"
+		until [ $(redis-cli -h "${WORDPRESS_REDIS_HOST}" PING) == 'PONG' ]; do
+			>&2 echo -n "."
+			sleep 1
+		done
+		>&2 echo "Redis is up"
+
 		if [ ! -s wp-config.php ]; then
 			wp config create \
 				--dbname=${WORDPRESS_DB_NAME} \
@@ -51,6 +58,11 @@ ini_set( 'display_errors', 1 );
 ini_set( 'log_errors', 1 );
 ini_set( 'error_log', '/var/log/wordpress/error.log');
 define( 'JETPACK_DEV_DEBUG', true );
+// Redis settings
+define( 'WP_CACHE', true );
+define( 'WP_CACHE_KEY_SALT', '${DOMAIN_NAME}' );
+define( 'WP_REDIS_HOST', '${WORDPRESS_REDIS_HOST}' );
+define( 'WP_REDIS_PORT', 6379 );
 PHP
 		fi
 
@@ -68,6 +80,8 @@ PHP
 			--allow-root
 
 		wp plugin delete hello.php --allow-root
+		wp plugin install --activate redis-cache --allow-root
+		wp redis enable --allow-root
 	fi
 fi
 

@@ -31,6 +31,7 @@ RUN apk add --no-cache \
         php7-zip \
         php7-phar \
         mysql-client \
+        redis \
     && rm -f /var/cache/apk/*
 
 RUN set -eux \
