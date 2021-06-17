@@ -37,7 +37,7 @@ if [ "$1" = 'php-fpm7' ]; then
 		>&2 echo "Database is up"
 
 		echo "Waiting for Redis"
-		until [ $(redis-cli -h "${WORDPRESS_REDIS_HOST}" PING) == 'PONG' ]; do
+		until [ $(redis-cli -h "${REDIS_HOST}" PING) == 'PONG' ]; do
 			>&2 echo -n "."
 			sleep 1
 		done
@@ -61,8 +61,8 @@ define( 'JETPACK_DEV_DEBUG', true );
 // Redis settings
 define( 'WP_CACHE', true );
 define( 'WP_CACHE_KEY_SALT', '${DOMAIN_NAME}' );
-define( 'WP_REDIS_HOST', '${WORDPRESS_REDIS_HOST}' );
-define( 'WP_REDIS_PORT', 6379 );
+define( 'WP_REDIS_HOST', '${REDIS_HOST}' );
+define( 'WP_REDIS_PORT', ${REDIS_PORT} );
 PHP
 		fi
 
