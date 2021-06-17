@@ -83,12 +83,14 @@ services:
     image: myweb
     volumes:
       - ./requirements/bonus/myweb/tools:/go/src/github.com/myweb
+    restart: always
     expose:
       - 3000
     networks:
       - frontend
   redis:
     image: redis:latest
+    restart: always
     expose:
       - 6379
     command: redis-server
