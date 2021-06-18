@@ -29,7 +29,7 @@ RUN mkdir -p "$PHP_INI_DIR/conf.d"
 WORKDIR /var/www/html/adminer
 
 RUN sed -ie 's/^user = nobody$/user = adminer/' /etc/php7/php-fpm.d/www.conf \
-    && sed -ie 's/^group = nobody$/user = adminer/' /etc/php7/php-fpm.d/www.conf \
+    && sed -ie 's/^group = nobody$/group = adminer/' /etc/php7/php-fpm.d/www.conf \
     && sed -ie 's/^listen = 127.0.0.1:9000/listen = 9090/' /etc/php7/php-fpm.d/www.conf \
     && sed -ie 's/^;clear_env = no$/clear_env = no/' /etc/php7/php-fpm.d/www.conf
 

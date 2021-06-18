@@ -49,7 +49,7 @@ WORKDIR /var/www/html
 RUN sed -ie 's/^user = nobody$/user = www-data/' /etc/php7/php-fpm.d/www.conf \
     && sed -ie 's/^group = nobody$/user = www-data/' /etc/php7/php-fpm.d/www.conf \
     && sed -ie 's/^listen = 127.0.0.1:9000/listen = 9000/' /etc/php7/php-fpm.d/www.conf \
-    && sed -ie 's/^;clear_env = no$/clear_env = no/' /etc/php7/php-fpm.d/www.conf
+    && sed -ie 's/^;\(clear_env = no\)$/\1/' /etc/php7/php-fpm.d/www.conf
 
 # wp-cli
 RUN set -eux; \
