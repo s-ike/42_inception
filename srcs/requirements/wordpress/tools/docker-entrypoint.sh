@@ -52,12 +52,6 @@ if [ "$1" = 'php-fpm7' ]; then
 				--force \
 				--allow-root \
 				--extra-php <<PHP
-define( 'WP_DEBUG', true );
-define( 'WP_DEBUG_DISPLAY', true );
-ini_set( 'display_errors', 1 );
-ini_set( 'log_errors', 1 );
-ini_set( 'error_log', '/var/log/wordpress/error.log');
-define( 'JETPACK_DEV_DEBUG', true );
 // Redis settings
 define( 'WP_CACHE', true );
 define( 'WP_CACHE_KEY_SALT', '${DOMAIN_NAME}' );
