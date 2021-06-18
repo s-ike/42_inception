@@ -10,9 +10,9 @@ setup:
 		./srcs/requirements/tools/setup.sh setup
 
 volumes:
-		mkdir -p $(DB_VOLUME)
-		mkdir -p $(WP_VOLUME)
-		mkdir -p $(AD_VOLUME)
+		sudo mkdir -p $(DB_VOLUME)
+		sudo mkdir -p $(WP_VOLUME)
+		sudo mkdir -p $(AD_VOLUME)
 
 up:
 		$(DC) up -d
