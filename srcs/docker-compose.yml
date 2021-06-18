@@ -4,7 +4,7 @@ services:
     build: ./requirements/mariadb
     image: mariadb
     volumes:
-      - $DB_VOLUME:/var/lib/mysql
+      - mariadb_volume:/var/lib/mysql
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
@@ -15,11 +15,12 @@ services:
       - 3306
     networks:
       - backend
+
   wordpress:
     build: ./requirements/wordpress
     image: wordpress
     volumes:
-      - $WP_VOLUME:/var/www/html
+      - wordpress_volume:/var/www/html
     depends_on:
       - mariadb
       - redis
@@ -49,12 +50,13 @@ services:
     networks:
       - frontend
       - backend
+
   nginx:
     build: ./requirements/nginx
     image: nginx
     volumes:
-      - $WP_VOLUME:/var/www/html
-      - $AD_VOLUME:/var/www/html/adminer
+      - wordpress_volume:/var/www/html
+      - adminer_volume:/var/www/html/adminer
     depends_on:
       - wordpress
     restart: always
@@ -64,12 +66,13 @@ services:
       - "443:443"
     networks:
       - frontend
+
   adminer:
     build: ./requirements/bonus/adminer
     image: adminer
     # image: adminer:4.7.5
     volumes:
-      - $AD_VOLUME:/var/www/html/adminer
+      - adminer_volume:/var/www/html/adminer
     depends_on:
       - mariadb
     restart: always
@@ -78,6 +81,7 @@ services:
     networks:
       - frontend
       - backend
+
   myweb:
     build: ./requirements/bonus/myweb
     image: myweb
@@ -88,6 +92,7 @@ services:
       - 3000
     networks:
       - frontend
+
   redis:
     build: ./requirements/bonus/redis
     image: redis
@@ -96,6 +101,7 @@ services:
       - 6379
     networks:
       - backend
+
 networks:
   frontend:
     driver: bridge
@@ -109,3 +115,20 @@ networks:
       driver: default
       config:
         - subnet: 192.168.20.0/24
+
+volumes:
+  wordpress_volume:
+    driver_opts:
+      type: none
+      device: $WP_VOLUME
+      o: bind
+  mariadb_volume:
+    driver_opts:
+      type: none
+      device: $DB_VOLUME
+      o: bind
+  adminer_volume:
+    driver_opts:
+      type: none
+      device: $AD_VOLUME
+      o: bind

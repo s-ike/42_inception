@@ -4,10 +4,15 @@ DB_VOLUME	:= `grep -E "^DB_VOLUME=" ./srcs/.env | sed -e "s/^.*=//"`
 WP_VOLUME	:= `grep -E "^WP_VOLUME=" ./srcs/.env | sed -e "s/^.*=//"`
 AD_VOLUME	:= `grep -E "^AD_VOLUME=" ./srcs/.env | sed -e "s/^.*=//"`
 
-all:	setup upb
+all:	setup volumes upb
 
 setup:
 		./srcs/requirements/tools/setup.sh setup
+
+volumes:
+		mkdir -p $(DB_VOLUME)
+		mkdir -p $(WP_VOLUME)
+		mkdir -p $(AD_VOLUME)
 
 up:
 		$(DC) up -d
