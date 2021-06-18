@@ -89,11 +89,11 @@ services:
     networks:
       - frontend
   redis:
-    image: redis:latest
+    build: ./requirements/bonus/redis
+    image: redis
     restart: always
     expose:
       - 6379
-    command: redis-server
     networks:
       - backend
 networks:

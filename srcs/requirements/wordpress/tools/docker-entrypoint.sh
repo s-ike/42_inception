@@ -37,7 +37,7 @@ if [ "$1" = 'php-fpm7' ]; then
 		>&2 echo "Database is up"
 
 		echo "Waiting for Redis"
-		until [ $(redis-cli -h "${REDIS_HOST}" PING) == 'PONG' ]; do
+		until [[ $(redis-cli -h "${REDIS_HOST}" PING) == 'PONG' ]]; do
 			>&2 echo -n "."
 			sleep 1
 		done
@@ -67,7 +67,7 @@ PHP
 		fi
 
 		wp core install \
-			--url=${DOMAIN_NAME} \
+			--url=https://${DOMAIN_NAME} \
 			--title=${WORDPRESS_WEBSITE_TITLE} \
 			--admin_user=${WORDPRESS_ADMIN_USER} \
 			--admin_password=${WORDPRESS_ADMIN_PASSWORD} \
