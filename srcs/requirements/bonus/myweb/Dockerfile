@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.13
 
 RUN apk add --no-cache \
         vim \
@@ -16,7 +16,6 @@ RUN mkdir -p /go/src/github.com/myweb
 
 RUN set -eux; \
     go mod init github.com/myweb; \
-    go mod tidy; \
     go get -u github.com/gorilla/mux;
 
 WORKDIR /go/src/github.com/myweb/

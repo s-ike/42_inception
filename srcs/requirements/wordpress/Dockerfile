@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.13
 
 # ensure www-data user exists
 RUN set -eux; \
