@@ -1,8 +1,5 @@
 SRCS		:= srcs/
 DC			:= cd $(SRCS) && docker-compose
-DB_VOLUME	:= `grep -E "^DB_VOLUME=" ./srcs/.env | sed -e "s/^.*=//"`
-WP_VOLUME	:= `grep -E "^WP_VOLUME=" ./srcs/.env | sed -e "s/^.*=//"`
-AD_VOLUME	:= `grep -E "^AD_VOLUME=" ./srcs/.env | sed -e "s/^.*=//"`
 
 all:	setup volumes upb
 
@@ -10,9 +7,10 @@ setup:
 		./srcs/requirements/tools/setup.sh setup
 
 volumes:
-		sudo mkdir -p $(DB_VOLUME)
-		sudo mkdir -p $(WP_VOLUME)
-		sudo mkdir -p $(AD_VOLUME)
+		. ./srcs/.env; \
+		sudo mkdir -p $${DB_VOLUME}; \
+		sudo mkdir -p $${WP_VOLUME}; \
+		sudo mkdir -p $${AD_VOLUME}
 
 up:
 		$(DC) up -d
@@ -34,7 +32,7 @@ clean:	down
 fclean:
 		$(DC) down --rmi all --volumes --remove-orphans
 		./srcs/requirements/tools/setup.sh fclean
-		sudo rm -rf $(WP_VOLUME) ${DB_VOLUME} $(AD_VOLUME)
+		. ./srcs/.env && sudo rm -rf $${DB_VOLUME} $${WP_VOLUME} $${AD_VOLUME}
 
 re:		fclean all
 
