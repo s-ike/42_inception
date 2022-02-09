@@ -3,6 +3,8 @@
 
 Docker composeを利用したサービス群
 
+全てのDockerfileをalpineベースから書いています
+
 ![Untitled Diagram](https://user-images.githubusercontent.com/13024418/152636933-3caf0a56-e097-45ac-b25b-c091fba71271.jpg)
 
 ## Demo
